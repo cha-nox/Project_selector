@@ -1,2 +1,1 @@
 InquirerPy
-python-dotenv
