@@ -1,8 +1,9 @@
-from json                   import JSONDecodeError, load
+from fnmatch                import fnmatch
 from InquirerPy.inquirer    import select
+from json                   import JSONDecodeError, load
 from os                     import listdir, system, path
 
-def loadSettings(settings_file : str = "settings.json") -> dict[str, str|bool] :
+def loadSettings(settings_file : str = 'settings.json') -> dict[str, str|bool] :
     """Loads settings from settings.json file."""
 
     try :
@@ -12,15 +13,22 @@ def loadSettings(settings_file : str = "settings.json") -> dict[str, str|bool] :
     except Exception as e       : print(f"Erreur lors du chargement de {settings_file}. : {e}")
     return {}
 
-def loadProjectsList(directory : str) -> list[str] :
-    """Returns a list of available projects folders in the given directory."""
+def checkIgnoredDirectory(directory_name : str, ignored_patterns : list[str]) -> bool :
+    """Check if a directory should be ignored based on the ignored patterns."""
+    
+    for pattern in ignored_patterns :
+        if fnmatch(directory_name.lower(), pattern.lower()) : return True
+    return False
+
+def loadProjectsList(directory : str, ignored_directories : list[str]) -> list[str] :
+    """Returns a list of available projects folders in the given directory, excluding ignored ones."""
 
     if not directory or not path.isdir(directory) : return []
     try :
         return sorted(
             f"• {name}"
             for name in listdir(directory)
-            if path.isdir(path.join(directory, name))
+            if path.isdir(path.join(directory, name)) and not checkIgnoredDirectory(name, ignored_directories)
         )
     except Exception as e :
         print(f"Erreur en lisant {directory} : {e}")
@@ -29,8 +37,9 @@ def loadProjectsList(directory : str) -> list[str] :
 if __name__ == '__main__' :
     settings            : dict[str, str|bool]   = loadSettings()
     projects_directory  : str                   = settings.get('projects_directory', '')
+    ignored_directories : list[str]             = settings.get('ignored_directories', [])
     cancel_option       : str                   = "× Annuler"
-    options             : list[str]             = loadProjectsList(projects_directory)
+    options             : list[str]             = loadProjectsList(projects_directory, ignored_directories)
 
     # Clearing the terminal
     system('cls')

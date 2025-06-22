@@ -1,3 +1,9 @@
 {
-    "projects_directory" : ""
+    "projects_directory" : "",
+    "ignored_directories" : [
+        "*rubbish*",
+        "*trash*",
+        "*backup*",
+        "*old*"
+    ]
 }
