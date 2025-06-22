@@ -27,6 +27,7 @@ if __name__ == '__main__' :
     # Checking if there are projects
     if options == [] :
         print("Aucun projet trouvé.")
+        system('pause')
         exit(2012)
 
     # Displaying the menu
