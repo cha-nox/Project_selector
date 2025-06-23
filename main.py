@@ -2,6 +2,7 @@ from fnmatch                import fnmatch
 from InquirerPy.inquirer    import select
 from json                   import JSONDecodeError, load
 from os                     import listdir, system, path
+from sys                    import exit as sysExit
 
 def loadSettings(settings_file : str = 'settings.json') -> dict[str, str|bool] :
     """Loads settings from settings.json file."""
@@ -48,7 +49,7 @@ if __name__ == '__main__' :
     if options == [] :
         print("Aucun projet trouvé.")
         system('pause')
-        exit(2012)
+        sysExit(2012)
 
     # Displaying the menu
     choice = select(
@@ -60,3 +61,4 @@ if __name__ == '__main__' :
 
     # Processing user's choice
     if choice != cancel_option : system(f'code "{projects_directory}/{choice[2:]}"')
+    sysExit(0)
